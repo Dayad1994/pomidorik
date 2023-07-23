@@ -27,7 +27,7 @@ SECONDS = MODES[MODE]
 # status of timer (0 - start; 1 - stop; 2 - running)
 STATUS_TIMER = 1
 
-# pomodoro
+# the number of consecutive pomodoro
 POMODORO = 0
 
 
@@ -52,12 +52,12 @@ def timer():
     if not STATUS_TIMER:
         return
     if SECONDS == 0:
-        # sound
+        # sound of end timer
         winsound.PlaySound('sound.wav', winsound.SND_FILENAME)
         STATUS_TIMER = 1
         if MODE == 'pomodoro':
             POMODORO += 1
-            # write 1 pomodoro to db
+            # write 1 pomodoro to db and return the number of today's pomodoro
             count_pomodoro = write_db()
             # update label of pomodoros
             pomodoro_label.configure(text=f'pomodoros: {count_pomodoro}')
@@ -67,13 +67,12 @@ def timer():
                 MODE = 'short break'
             mode_button.configure(text=MODE)
             SECONDS = MODES[MODE]
-
-            # break timer after pomodoro
-            STATUS_TIMER = 2
             # app window zommed
             root.state('zoom')
             # app window over all other windows
             root.attributes('-topmost', True)
+            # break timer after pomodoro
+            STATUS_TIMER = 2
             timer()
         elif MODE in ('short break', 'long break'):
             MODE = 'pomodoro'
