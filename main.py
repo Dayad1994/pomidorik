@@ -1,17 +1,22 @@
 import tkinter
+import winsound
 
-from func import seconds_to_ftime
+from func import seconds_to_ftime, create_db, write_db, read_db, today_pomodoro
 
+
+# create 'pomodoro' table
+create_db()
 
 root = tkinter.Tk()
 root.title('Timer')
 root.geometry('300x300')
+root.attributes('-topmost', False)
 
 
 # dict of timer's mode
-MODES = {'pomodoro': 6,
-         'short break': 5,
-         'long break': 15}
+MODES = {'pomodoro': 1500,
+         'short break': 300,
+         'long break': 900}
 
 # mode of timer
 MODE = 'pomodoro'
@@ -47,10 +52,15 @@ def timer():
     if not STATUS_TIMER:
         return
     if SECONDS == 0:
+        # sound
+        winsound.PlaySound('sound.wav', winsound.SND_FILENAME)
         STATUS_TIMER = 1
         if MODE == 'pomodoro':
             POMODORO += 1
-            pomodoro_label.configure(text=f'pomodoros: {POMODORO}')
+            # write 1 pomodoro to db
+            count_pomodoro = write_db()
+            # update label of pomodoros
+            pomodoro_label.configure(text=f'pomodoros: {count_pomodoro}')
             if POMODORO % 4 == 0:
                 MODE = 'long break'
             else:
@@ -60,12 +70,20 @@ def timer():
 
             # break timer after pomodoro
             STATUS_TIMER = 2
+            # app window zommed
+            root.state('zoom')
+            # app window over all other windows
+            root.attributes('-topmost', True)
             timer()
         elif MODE in ('short break', 'long break'):
             MODE = 'pomodoro'
             mode_label.configure(text=MODE)
             SECONDS = MODES[MODE]
             time_label.configure(text=seconds_to_ftime(SECONDS))
+            # app window return to normal
+            root.attributes('-topmost', False)
+            # return to normal size of window
+            root.state('normal')
         return
     SECONDS -= 1
     time_label.configure(text=seconds_to_ftime(SECONDS))
@@ -103,7 +121,7 @@ mode_label = tkinter.Label(root, fg='green', font=('Helvetica', 15),
 mode_label.pack()
 
 pomodoro_label = tkinter.Label(root, fg='red', font=('Helvetica', 15),
-                               text=f'pomodoros: {POMODORO}')
+                               text=f'pomodoros: {today_pomodoro()}')
 pomodoro_label.pack()
 
 root.mainloop()
