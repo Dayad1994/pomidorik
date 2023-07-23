@@ -43,7 +43,7 @@ def mode():
             MODE = 'pomodoro'
         SECONDS = MODES[MODE]
         time_label.configure(text=seconds_to_ftime(SECONDS))
-        mode_label.configure(text=MODE)
+        mode_button.configure(text=MODE)
 
 
 # function of timer
@@ -65,7 +65,7 @@ def timer():
                 MODE = 'long break'
             else:
                 MODE = 'short break'
-            mode_label.configure(text=MODE)
+            mode_button.configure(text=MODE)
             SECONDS = MODES[MODE]
 
             # break timer after pomodoro
@@ -77,7 +77,7 @@ def timer():
             timer()
         elif MODE in ('short break', 'long break'):
             MODE = 'pomodoro'
-            mode_label.configure(text=MODE)
+            mode_button.configure(text=MODE)
             SECONDS = MODES[MODE]
             time_label.configure(text=seconds_to_ftime(SECONDS))
             # app window return to normal
@@ -94,12 +94,14 @@ def timer():
 def stop():
     global STATUS_TIMER
     STATUS_TIMER = 0
+    start_stop_button.configure(text='Start', command=start)
 
 
 # function for start timer
 def start():
     global STATUS_TIMER
     STATUS_TIMER = 2
+    start_stop_button.configure(text='Stop', command=stop)
     timer()
 
 
@@ -107,18 +109,11 @@ time_label = tkinter.Label(root, fg='green', font=('Helvetica', 15),
                            text=seconds_to_ftime(SECONDS))
 time_label.pack()
 
-start_button = tkinter.Button(root, text='Start', command=start)
-start_button.pack()
+start_stop_button = tkinter.Button(root, text='Start', command=start)
+start_stop_button.pack()
 
-stop_button = tkinter.Button(root, text='Stop', command=stop)
-stop_button.pack()
-
-mode_button = tkinter.Button(text='Mode', command=mode)
+mode_button = tkinter.Button(text=MODE, command=mode)
 mode_button.pack()
-
-mode_label = tkinter.Label(root, fg='green', font=('Helvetica', 15),
-                           text=MODE)
-mode_label.pack()
 
 pomodoro_label = tkinter.Label(root, fg='red', font=('Helvetica', 15),
                                text=f'pomodoros: {today_pomodoro()}')
