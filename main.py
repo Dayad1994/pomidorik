@@ -1,3 +1,12 @@
+'''
+Convert .py to .exe:
+
+pip install Pyinstaller
+pyinstaller --onefile -w simple.py
+
+where -w  - without consol
+
+'''
 from tkinter import Button, Label, Frame, Tk, RIGHT, BOTH
 from winsound import PlaySound, SND_FILENAME
 
@@ -89,7 +98,6 @@ def timer():
             mode_btn.configure(text=CUR_MODE)
             start_stop_btn.configure(text='Start', command=stop, fg='green')
             time_lbl.configure(text=seconds_to_ftime(SECONDS))
-            window.state('normal')  # return to normal size of window
     else:
         SECONDS -= 1
         time_lbl.configure(text=seconds_to_ftime(SECONDS))
@@ -104,6 +112,7 @@ def stop():
 
 
 def start():
+    window.state('normal')  # return to normal size of window
     '''start timer'''
     global STATUS_TIMER
     STATUS_TIMER = 2
