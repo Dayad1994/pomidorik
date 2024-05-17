@@ -1,2 +1,6 @@
 __pycache__/
 sqlite_python.db
+.venv/
+build/
+dist/
+pomodorik.spec
